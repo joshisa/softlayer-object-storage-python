@@ -8,6 +8,8 @@ from object_storage import errors
 from object_storage.transport import BaseAuthentication, \
     BaseAuthenticatedConnection, Response
 import httplib2
+import os
+from base64 import b64encode
 
 from object_storage.utils import json
 
@@ -71,11 +73,18 @@ class Authentication(BaseAuthentication):
     """
         Authentication class.
     """
-    def __init__(self, username, api_key, auth_token=None, *args, **kwargs):
+    def __init__(self, username, api_key, auth_token=None,
+                 bluemix=False, *args, **kwargs):
         super(Authentication, self).__init__(*args, **kwargs)
         self.username = username
         self.api_key = api_key
         self.auth_token = auth_token
+        if os.getenv('VCAP_SERVICES'):
+            self.bluemix = True
+            # Find the bluemix app name to use as the SL objectstore user
+            VCAP_APPLICATION = os.getenv('VCAP_APPLICATION')
+            decoded_application = json.loads(VCAP_APPLICATION)
+            self.bluemixappname = decoded_application['name']
         if self.auth_token:
             self.authenticated = True
 
@@ -90,7 +99,17 @@ class Authentication(BaseAuthentication):
                    'Content-Length': '0'}
         http = httplib2.Http()
         http.disable_ssl_certificate_validation = True
-        res, content = http.request(self.auth_url, 'GET', headers=headers)
+        if self.bluemix:
+            userAndPass = b64encode(bytes(self.username + ':' +
+                                    self.api_key),
+                                    'utf-8').decode("ISO-8859-1")
+            bluemix_headers = {'Authorization': 'Basic %s' % userAndPass}
+            res, content = http.request(self.auth_url + '/' +
+                                        self.bluemixappname,
+                                        'GET', headers=bluemix_headers)
+        else:
+            res, content = http.request(self.auth_url, 'GET', headers=headers)
+
         response = Response()
         response.headers = res
         response.status_code = int(res.status)
@@ -99,13 +118,15 @@ class Authentication(BaseAuthentication):
         if response.status_code == 401:
             raise errors.AuthenticationError('Invalid Credentials')
         response.raise_for_status()
-        try:
-            storage_options = json.loads(response.content)['storage']
-        except ValueError:
-            raise errors.StorageURLNotFound("Could not parse services JSON.")
+        if not self.bluemix:
+            try:
+                storage_options = json.loads(response.content)['storage']
+            except ValueError:
+                raise errors.StorageURLNotFound("Could not parse "
+                                                "services JSON.")
+            self.storage_url = self.get_storage_url(storage_options)
 
         self.auth_token = response.headers['x-auth-token']
-        self.storage_url = self.get_storage_url(storage_options)
         if not self.storage_url:
             self.storage_url = response.headers['x-storage-url']
         if not self.auth_token or not self.storage_url:
