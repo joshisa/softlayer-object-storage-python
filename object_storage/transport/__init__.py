@@ -201,6 +201,7 @@ class ChunkedUploadConnection:
         r.version = res.version
         r.headers = dict(res.getheaders())
         r.content = content
+        print(r.content)
         r.raise_for_status()
         return r
 
