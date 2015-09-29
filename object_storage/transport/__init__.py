@@ -3,7 +3,7 @@
 
     See COPYING for license information
 """
-import httplib
+import http.client
 from socket import timeout
 from urlparse import urlparse
 
@@ -158,9 +158,9 @@ class ChunkedUploadConnection:
         port = int(port)
 
         if scheme == 'https':
-            self.req = httplib.HTTPSConnection(host, port)
+            self.req = http.client.HTTPSConnection(host, port)
         else:
-            self.req = httplib.HTTPConnection(host, port)
+            self.req = http.client.HTTPConnection(host, port)
         try:
             self.req.putrequest('PUT', path)
             for key, value in headers.iteritems():
