@@ -16,7 +16,7 @@ class ContainerModel(Model):
         _headers = {}
 
         # Lowercase headers
-        for key, value in headers.iteritems():
+        for key, value in headers.items():
             _key = key.lower()
             _headers[_key] = value
         self.headers = _headers
@@ -43,7 +43,7 @@ class ContainerModel(Model):
 
         meta = {}
 
-        for key, value in self.headers.iteritems():
+        for key, value in self.headers.items():
             if key.startswith('meta_'):
                 meta[key[5:]] = value
             elif key.startswith('x-container-meta-'):
@@ -53,6 +53,17 @@ class ContainerModel(Model):
 
         self.properties = _properties
         self.data = self.properties
+
+    def __iter__(self):
+        """ Returns an interator based on results of self.objects() """
+        listing = self.objects()
+        for obj in listing:
+            yield obj
+
+    def __len__(self):
+        if not self.model:
+            self.load()
+        return int(self.model['size'])
 
 
 class Container:
@@ -150,7 +161,7 @@ class Container:
         @raises ResponseError
         """
         meta_headers = {}
-        for k, v in meta.iteritems():
+        for k, v in meta.items():
             meta_headers["x-container-meta-%s" % (k, )] = v
         return self.make_request('POST', headers=meta_headers)
 
@@ -227,7 +238,7 @@ class Container:
         def _formatter(res):
             objects = {}
             if res.content:
-                items = json.loads(res.content)
+                items = json.loads(res.content.decode('utf-8'))
                 for item in items:
                     if 'name' in item:
                         objects[item['name']] = self.storage_object(

@@ -24,11 +24,12 @@ logger = logging.getLogger(__name__)
 class StorageObjectModel(Model):
     def __init__(self, controller, container, name, headers={}):
         self.container = container
+        self.model = None
         self.name = name
         _headers = {}
 
         # Lowercase headers
-        for key, value in headers.iteritems():
+        for key, value in headers.items():
             _key = key.lower()
             _headers[_key] = value
         self.headers = _headers
@@ -57,7 +58,7 @@ class StorageObjectModel(Model):
         _properties['url'] = controller.url
 
         meta = {}
-        for key, value in self.headers.iteritems():
+        for key, value in self.headers.items():
             if key.startswith('meta_'):
                 meta[key[5:]] = value
             elif key.startswith('x-object-meta-'):
@@ -67,6 +68,15 @@ class StorageObjectModel(Model):
 
         self.properties = _properties
         self.data = self.properties
+
+    def __iter__(self):
+        """ Returns an interator based on results of self.objects() """
+        listing = self.objects()
+        for obj in listing:
+            yield obj
+
+    def __len__(self):
+        return int(self.properties['size'])
 
 
 class StorageObject:
@@ -183,7 +193,7 @@ class StorageObject:
         def _formatter(res):
             objects = {}
             if res.content:
-                items = json.loads(res.content)
+                items = json.loads(res.content.decode('utf-8'))
                 for item in items:
                     if 'name' in item:
                         objects[item['name']] = self.client.storage_object(
@@ -220,7 +230,7 @@ class StorageObject:
         @raises ResponseError
         """
         meta_headers = {}
-        for k, v in meta.iteritems():
+        for k, v in meta.items():
             meta_headers["X-Object-Meta-%s" % (k, )] = v
         return self.make_request('POST', headers=meta_headers)
 
