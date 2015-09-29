@@ -61,9 +61,7 @@ class ContainerModel(Model):
             yield obj
 
     def __len__(self):
-        if not self.model:
-            self.load()
-        return int(self.model['size'])
+        return int(self.properties['size'])
 
 
 class Container:
