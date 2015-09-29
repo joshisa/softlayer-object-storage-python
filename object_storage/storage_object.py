@@ -8,11 +8,8 @@ from io import IOBase
 import mimetypes
 import os
 import logging
+import io
 
-try:
-    import StringIO
-except ImportError:
-    from io import StringIO as StringIO
 try:
     from hashlib import md5
 except ImportError:
@@ -339,7 +336,7 @@ class StorageObject:
                 size = len(data)
 
         if isinstance(data, str):
-            data = StringIO.StringIO(data)
+            data = io.StringIO(data)
 
         headers = {}
         content_type = self.content_type
