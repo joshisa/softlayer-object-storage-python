@@ -5,7 +5,7 @@
 """
 import http.client
 from socket import timeout
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 import urllib2
 import re
