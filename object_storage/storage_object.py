@@ -4,6 +4,7 @@
     See COPYING for license information
 """
 from object_storage.utils import json, Model
+from io import IOBase
 import mimetypes
 import os
 import logging
@@ -327,7 +328,7 @@ class StorageObject:
         @return: StorageObject, self
         """
         size = None
-        if isinstance(data, file):
+        if isinstance(data, IOBase):
             try:
                 data.flush()
             except IOError:
@@ -337,7 +338,7 @@ class StorageObject:
             if hasattr(data, '__len__'):
                 size = len(data)
 
-        if isinstance(data, basestring):
+        if isinstance(data, str):
             data = StringIO.StringIO(data)
 
         headers = {}
