@@ -46,7 +46,7 @@ class BaseAuthenticatedConnection:
     def get_headers(self):
         """ Get default headers for this connection """
         return dict([('User-Agent', consts.USER_AGENT)] +
-                    self.auth_headers.items())
+                    list(self.auth_headers.items()))
 
     def chunk_upload(self, method, url, size=None, headers=None):
         """ Returns new ChunkedConnection """
@@ -59,7 +59,7 @@ class BaseAuthenticatedConnection:
         """ Returns new ChunkedConnection """
         headers = self.get_headers()
         req = Request(url)
-        for k, v in headers.iteritems():
+        for k, v in headers.items():
             req.add_header(k, v)
         r = urlopen(req)
         while True:
@@ -163,7 +163,7 @@ class ChunkedUploadConnection:
             self.req = http.client.HTTPConnection(host, port)
         try:
             self.req.putrequest('PUT', path)
-            for key, value in headers.iteritems():
+            for key, value in headers.items():
                 self.req.putheader(key, value)
             self.req.endheaders()
         except Exception:
