@@ -3,11 +3,11 @@
 
     See COPYING for license information
 """
-import urllib
+from urllib.parse import urlencode
 from object_storage import errors
 from object_storage.transport import BaseAuthentication, \
     BaseAuthenticatedConnection, Response
-import http.client
+import httplib2
 import os
 from base64 import b64encode
 
@@ -24,10 +24,10 @@ class AuthenticatedConnection(BaseAuthenticatedConnection):
     """
     def __init__(self, auth, debug=False, **kwargs):
         if debug:
-            http.client.debuglevel = 4
+            httplib2.debuglevel = 4
         self.token = None
         self.storage_url = None
-        self.http = http.client.Http()
+        self.http = httplib2.Http()
         self.http.disable_ssl_certificate_validation = True
         self.auth = auth
         if not self.auth.authenticated:
@@ -41,7 +41,7 @@ class AuthenticatedConnection(BaseAuthenticatedConnection):
         headers.update(self.get_headers())
 
         if params:
-            url = "%s?%s" % (url, urllib.urlencode(params))
+            url = "%s?%s" % (url, urlencode(params))
 
         def _make_request(headers):
             logger.debug("%s %s %s" % (method, url, headers))
@@ -97,16 +97,16 @@ class Authentication(BaseAuthentication):
         headers = {'X-Storage-User': self.username,
                    'X-Storage-Pass': self.api_key,
                    'Content-Length': '0'}
-        httpclient = http.client.Http()
-        httpclient.disable_ssl_certificate_validation = True
+        http = httplib2.Http()
+        http.disable_ssl_certificate_validation = True
         if self.bluemix:
             userAndPass = b64encode(bytes(self.username + ':' +
                                     self.api_key,
                                     'utf-8')).decode("ISO-8859-1")
             bluemix_headers = {'Authorization': 'Basic %s' % userAndPass}
-            res, content = httpclient.request(self.auth_url + '/' +
-                                              self.bluemixappname,
-                                              'GET', headers=bluemix_headers)
+            res, content = http.request(self.auth_url + '/' +
+                                        self.bluemixappname,
+                                        'GET', headers=bluemix_headers)
         else:
             res, content = http.request(self.auth_url, 'GET', headers=headers)
 

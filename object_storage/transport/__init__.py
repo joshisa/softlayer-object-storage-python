@@ -46,7 +46,7 @@ class BaseAuthenticatedConnection:
     def get_headers(self):
         """ Get default headers for this connection """
         return dict([('User-Agent', consts.USER_AGENT)] +
-                    self.auth_headers.items())
+                    list(self.auth_headers.items()))
 
     def chunk_upload(self, method, url, size=None, headers=None):
         """ Returns new ChunkedConnection """

@@ -282,7 +282,7 @@ class Client(object):
         def _formatter(res):
             containers = []
             if res.content:
-                items = json.loads(res.content)
+                items = json.loads(res.content.decode('utf-8'))
                 for item in items:
                     name = item.get('name', None)
                     containers.append(self.container(name, item))

@@ -3,7 +3,7 @@
 
     See COPYING for license information
 """
-import urllib
+from urllib.parse import urlencode
 from object_storage import errors
 from object_storage.transport import BaseAuthentication, \
     BaseAuthenticatedConnection, Response
@@ -41,7 +41,7 @@ class AuthenticatedConnection(BaseAuthenticatedConnection):
         headers.update(self.get_headers())
 
         if params:
-            url = "%s?%s" % (url, urllib.urlencode(params))
+            url = "%s?%s" % (url, urlencode(params))
 
         def _make_request(headers):
             logger.debug("%s %s %s" % (method, url, headers))
