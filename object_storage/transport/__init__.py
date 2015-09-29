@@ -178,7 +178,7 @@ class ChunkedUploadConnection:
                 self.req.send("\r\n")
             else:
                 self.req.send(bytes(chunk, 'UTF-8'))
-        except timeout, err:
+        except timeout as err:
             raise err
         except:
             raise ResponseError(0, 'Disconnected')
@@ -188,7 +188,7 @@ class ChunkedUploadConnection:
         try:
             if self._chunked_encoding:
                 self.req.send("0\r\n\r\n")
-        except timeout, err:
+        except timeout as err:
             raise err
         except:
             raise ResponseError(0, 'Disconnected')
