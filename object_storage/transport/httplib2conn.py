@@ -101,8 +101,8 @@ class Authentication(BaseAuthentication):
         http.disable_ssl_certificate_validation = True
         if self.bluemix:
             userAndPass = b64encode(bytes(self.username + ':' +
-                                    self.api_key),
-                                    'utf-8').decode("ISO-8859-1")
+                                    self.api_key,
+                                    'utf-8')).decode("ISO-8859-1")
             bluemix_headers = {'Authorization': 'Basic %s' % userAndPass}
             res, content = http.request(self.auth_url + '/' +
                                         self.bluemixappname,
