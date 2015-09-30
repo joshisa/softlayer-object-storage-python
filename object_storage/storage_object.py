@@ -361,14 +361,19 @@ class StorageObject:
 
         checksum = md5()
         transfered = 0
+        print("Chunk uploading ...")
+        print(self.container)
+        print(self.name)
+        print(size)
+        print(headers)
+        print("Woot")
         conn = self.chunk_upload(size=size, headers=headers)
         buff = data.read(4096)
         while len(buff) > 0:
             conn.send(buff)
             if check_md5:
-                checksum.update(buff.encode('utf-8'))
+                checksum.update(buff.encode('ISO-8859-1'))
             transfered += len(buff)
-            print("Buffering ...")
             buff = data.read(4096)
         res = conn.finish()
 
@@ -377,7 +382,8 @@ class StorageObject:
                 'md5 hashes do not match'
         res.headers['Content-Length'] = transfered
         print("Inspecting Response Headers ...")
-        print(res)
+        print(res.headers)
+        print("Woot2")
         self.model = StorageObjectModel(
             self, self.container, self.name, res.headers)
         headers['Content-Type'] = content_type
