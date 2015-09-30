@@ -141,6 +141,11 @@ class Client(object):
     def url(self):
         """ Returns the url of the resource. """
         return self.get_url()
+        
+    @property
+    def auth_token(self):
+        """ Returns the X-Auth-Token required to fetch the resource. """
+        return self.get_auth_token()
 
     def is_dir(self):
         """ Returns whether or not this is a directory. Always True. """
@@ -351,6 +356,17 @@ class Client(object):
         if path:
             url = "%s/%s" % (url, get_path(path))
         return url
+        
+    def get_auth_token(self, path=None):
+        """ Returns the url of the resource
+
+        @param path: path to append to the end of the URL
+        """
+        auth_token = self.auth_token
+        if not auth_token:
+            self.auth_token = self.conn.auth_token
+            auth_token = self.auth_token
+        return auth_token
 
     def make_request(self, method, path=None, *args, **kwargs):
         """ Make an HTTP request
