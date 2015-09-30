@@ -381,9 +381,6 @@ class StorageObject:
             assert checksum.hexdigest() == res.headers['Etag'], \
                 'md5 hashes do not match'
         res.headers['Content-Length'] = transfered
-        print("Inspecting Response Headers ...")
-        print(res.headers)
-        print("Woot2")
         self.model = StorageObjectModel(
             self, self.container, self.name, res.headers)
         headers['Content-Type'] = content_type
