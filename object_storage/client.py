@@ -363,9 +363,11 @@ class Client(object):
 
         @param path: path to append to the end of the URL
         """
-        print(self.conn.auth_headers)
-        print("Woot")
-        return self.auth_token
+        token = self.auth_token
+        if not token:
+            self.auth_token = self.conn.auth_token
+            token = self.auth_token
+        return token
 
     def make_request(self, method, path=None, *args, **kwargs):
         """ Make an HTTP request
