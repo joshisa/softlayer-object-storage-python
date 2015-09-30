@@ -8,6 +8,7 @@ from io import IOBase
 import mimetypes
 import os
 import logging
+import locale
 import io
 
 try:
@@ -336,6 +337,7 @@ class StorageObject:
         """
         size = None
         if isinstance(data, IOBase):
+            print("IOBaseland")
             try:
                 data.flush()
             except IOError:
@@ -346,7 +348,12 @@ class StorageObject:
                 size = len(data)
 
         if isinstance(data, str):
+            print("StringIOLand")
             data = io.StringIO(data)
+        
+        if isinstance(data, bytes):
+            print("BytesIOLand")
+            data = io.BytesIO(data)
 
         headers = {}
         content_type = self.content_type
@@ -362,6 +369,7 @@ class StorageObject:
         checksum = md5()
         transfered = 0
         print("Chunk uploading ...")
+        print(locale.getpreferredencoding())
         print(self.container)
         print(self.name)
         print(size)
@@ -372,7 +380,7 @@ class StorageObject:
         while len(buff) > 0:
             conn.send(buff)
             if check_md5:
-                checksum.update(buff.encode("utf-8"))
+                checksum.update(buff.encode(locale.getpreferredencoding()))
             transfered += len(buff)
             buff = data.read(4096)
         res = conn.finish()
