@@ -365,7 +365,7 @@ class Client(object):
         """
         token = self.auth_token
         if not token:
-            self.auth_token = self.conn.auth_token
+            self.auth_token = self.conn.token
             token = self.auth_token
         return token
 
