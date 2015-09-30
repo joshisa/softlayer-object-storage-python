@@ -20,7 +20,7 @@ class AccountModel(Model):
         _headers = {}
 
         # Lowercase headers
-        for key, value in headers.iteritems():
+        for key, value in headers.items():
             _key = key.lower()
             _headers[_key] = value
         self.headers = _headers
@@ -42,7 +42,7 @@ class AccountModel(Model):
         _properties['url'] = controller.url
 
         meta = {}
-        for key, value in self.headers.iteritems():
+        for key, value in self.headers.items():
             if key.startswith('meta_'):
                 meta[key[5:]] = value
             elif key.startswith('x-account-meta-'):
@@ -169,7 +169,7 @@ class Client(object):
         params = {}
         options = options or {}
         options.update(kwargs)
-        for key, val in options.iteritems():
+        for key, val in options.items():
             if key.startswith('q_'):
                 params["q.%s" % key[2:]] = val
             else:
@@ -243,9 +243,9 @@ class Client(object):
         @raises ResponseError
         """
         meta_headers = {}
-        for k, v in headers.iteritems():
+        for k, v in headers.items():
             meta_headers[k] = v
-        for k, v in meta.iteritems():
+        for k, v in meta.items():
             meta_headers["x-account-meta-%s" % (k, )] = v
         self.make_request('POST', headers=meta_headers)
 
