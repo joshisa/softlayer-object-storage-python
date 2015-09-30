@@ -364,7 +364,7 @@ class Client(object):
         @param path: path to append to the end of the URL
         """
         print("WOot")
-        print(self.conn.auth_token)
+        print(self.conn.storage_url)
         print("TokenEnd")
         return self.auth_token
 
