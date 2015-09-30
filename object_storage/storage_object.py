@@ -372,7 +372,7 @@ class StorageObject:
         while len(buff) > 0:
             conn.send(buff)
             if check_md5:
-                checksum.update(buff.encode("latin-1"))
+                checksum.update(buff.encode("utf-8"))
             transfered += len(buff)
             buff = data.read(4096)
         res = conn.finish()
