@@ -380,7 +380,6 @@ class StorageObject:
         if check_md5:
             print(checksum.hexdigest())
             print(res.headers['Etag'])
-            print(checksum.hexdigest().decode("ISO-8859-1"))
             assert checksum.hexdigest() == res.headers['Etag'], \
                 'md5 hashes do not match'
         res.headers['Content-Length'] = transfered
