@@ -378,7 +378,7 @@ class StorageObject:
         res = conn.finish()
 
         if check_md5:
-            assert checksum.hexdigest() == res.headers['etag'], \
+            assert checksum.hexdigest() == res.headers['Etag'], \
                 'md5 hashes do not match'
         res.headers['Content-Length'] = transfered
         print("Inspecting Response Headers ...")
