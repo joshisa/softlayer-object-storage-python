@@ -359,15 +359,11 @@ class Client(object):
         return url
         
     def get_token(self, path=None):
-        """ Returns the url of the resource
+        """ Returns the auth_token required to fetch the resource
 
         @param path: path to append to the end of the URL
         """
-        token = self.auth_token
-        if not token:
-            self.auth_token = self.auth.auth_token
-            token = self.auth_token
-        return token
+        return self.auth_token
 
     def make_request(self, method, path=None, *args, **kwargs):
         """ Make an HTTP request
