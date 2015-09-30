@@ -37,7 +37,7 @@ class AccountModel(Model):
         _properties['size'] = int(
             self.headers.get('x-account-bytes-used') or
             self.headers.get('size') or 0)
-
+        _properties['token'] = controller.token
         _properties['path'] = controller.path
         _properties['url'] = controller.url
 
