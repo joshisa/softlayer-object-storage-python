@@ -25,7 +25,6 @@ class AuthenticatedConnection(BaseAuthenticatedConnection):
     def __init__(self, auth, debug=False, **kwargs):
         if debug:
             httplib2.debuglevel = 4
-        self.token = None
         self.storage_url = None
         self.http = httplib2.Http()
         self.http.disable_ssl_certificate_validation = True
@@ -91,6 +90,10 @@ class Authentication(BaseAuthentication):
     @property
     def auth_headers(self):
         return {'X-Auth-Token': self.auth_token}
+        
+    @property
+    def auth_token(self):
+        return self.auth_token
 
     def authenticate(self):
         """ Does authentication """
@@ -127,7 +130,6 @@ class Authentication(BaseAuthentication):
             self.storage_url = self.get_storage_url(storage_options)
 
         self.auth_token = response.headers['x-auth-token']
-        print("Auth Token: %s" % self.auth_token)
         if not self.storage_url:
             self.storage_url = response.headers['x-storage-url']
         if not self.auth_token or not self.storage_url:
