@@ -25,6 +25,7 @@ class AuthenticatedConnection(BaseAuthenticatedConnection):
     def __init__(self, auth, debug=False, **kwargs):
         if debug:
             httplib2.debuglevel = 4
+        self.token = None
         self.storage_url = None
         self.http = httplib2.Http()
         self.http.disable_ssl_certificate_validation = True
@@ -92,7 +93,7 @@ class Authentication(BaseAuthentication):
         return {'X-Auth-Token': self.auth_token}
         
     @property
-    def auth_token(self):
+    def token(self):
         return self.auth_token
 
     def authenticate(self):
