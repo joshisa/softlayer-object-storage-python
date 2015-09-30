@@ -368,6 +368,7 @@ class StorageObject:
             if check_md5:
                 checksum.update(buff.encode('utf-8'))
             transfered += len(buff)
+            print("Buffering ...")
             buff = data.read(4096)
         res = conn.finish()
 
@@ -375,6 +376,9 @@ class StorageObject:
             assert checksum.hexdigest() == res.headers['etag'], \
                 'md5 hashes do not match'
         res.headers['content-length'] = transfered
+        print("Inspecting Response Headers ...")
+        print(res.headers)
+        print(res)
         self.model = StorageObjectModel(
             self, self.container, self.name, res.headers)
         headers['Content-Type'] = content_type
