@@ -90,6 +90,7 @@ class Client(object):
         self.container_class = kwargs.get('container_class', Container)
         self.object_class = kwargs.get('object_class', StorageObject)
         self.storage_url = None
+        self.auth_token = None
         self.conn = connection
 
         self.model = None
