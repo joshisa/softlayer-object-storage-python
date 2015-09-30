@@ -52,6 +52,15 @@ class AccountModel(Model):
 
         self.properties = _properties
         self.data = self.properties
+        
+    def __iter__(self):
+        """ Returns an interator based on results of self.objects() """
+        listing = self.objects()
+        for obj in listing:
+            yield obj
+
+    def __len__(self):
+        return int(self.properties['size'])
 
 
 class Client(object):
