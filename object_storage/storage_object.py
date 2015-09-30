@@ -372,12 +372,15 @@ class StorageObject:
         while len(buff) > 0:
             conn.send(buff)
             if check_md5:
-                checksum.update(buff)
+                checksum.update(buff.encode("ISO-8859-1"))
             transfered += len(buff)
             buff = data.read(4096)
         res = conn.finish()
 
         if check_md5:
+            print(checksum.hexdigest())
+            print(res.headers['Etag'])
+            print(checksum.hexdigest().decode("ISO-8859-1"))
             assert checksum.hexdigest() == res.headers['Etag'], \
                 'md5 hashes do not match'
         res.headers['Content-Length'] = transfered
