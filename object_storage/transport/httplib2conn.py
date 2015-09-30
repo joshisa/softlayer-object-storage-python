@@ -127,6 +127,7 @@ class Authentication(BaseAuthentication):
             self.storage_url = self.get_storage_url(storage_options)
 
         self.auth_token = response.headers['x-auth-token']
+        print("Auth Token: %s" % self.auth_token)
         if not self.storage_url:
             self.storage_url = response.headers['x-storage-url']
         if not self.auth_token or not self.storage_url:
