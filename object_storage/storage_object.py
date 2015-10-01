@@ -378,7 +378,7 @@ class StorageObject:
         conn = self.chunk_upload(size=size, headers=headers)
         buff = data.read(4096)
         while len(buff) > 0:
-            conn.send(buff.encode(locale.getpreferredencoding()))
+            conn.send(buff)
             if check_md5:
                 checksum.update(buff.encode(locale.getpreferredencoding()))
             transfered += len(buff)
