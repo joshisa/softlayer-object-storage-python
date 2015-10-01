@@ -177,7 +177,7 @@ class ChunkedUploadConnection:
                 self.req.send(chunk)
                 self.req.send("\r\n")
             else:
-                self.req.send(bytes(chunk, 'UTF-8'))
+                self.req.send(chunk)
         except timeout as err:
             raise err
         except:
