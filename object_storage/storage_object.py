@@ -368,19 +368,12 @@ class StorageObject:
 
         checksum = md5()
         transfered = 0
-        print("Chunk uploading ...")
-        print(locale.getpreferredencoding())
-        print(self.container)
-        print(self.name)
-        print(size)
-        print(headers)
-        print("Woot")
         conn = self.chunk_upload(size=size, headers=headers)
         buff = data.read(4096)
         while len(buff) > 0:
             conn.send(buff)
             if check_md5:
-                checksum.update(buff.encode(locale.getpreferredencoding()))
+                checksum.update(buff.getvalue())
             transfered += len(buff)
             buff = data.read(4096)
         res = conn.finish()
