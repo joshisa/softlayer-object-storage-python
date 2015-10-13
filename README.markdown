@@ -29,7 +29,7 @@ Basic Usage
 ```python
 import object_storage
 
-sl_storage = object_storage.get_client('YOUR_USERNAME', 'YOUR_API_KEY', datacenter='dal05')
+sl_storage = object_storage.get_client('YOUR_USERNAME', 'YOUR_API_KEY', 'YOUR_BLUEMIX_AUTH_URL', datacenter='dal05')
 
 sl_storage.containers()
 # []
